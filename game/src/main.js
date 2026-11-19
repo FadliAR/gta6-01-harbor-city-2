@@ -543,11 +543,11 @@ function updateCamera(dt) {
     // frame, police behind it, helicopter + searchlight up top
     const car = G.playerCar.mesh.position;
     const a = G.playerCar.angle;
-    const side = 16;
+    const side = 24;
     const px = car.x + Math.sin(a + 1.15) * side;
     const pz = car.z + Math.cos(a + 1.15) * side;
-    camera.position.set(px, 8, pz);
-    camera.lookAt(car.x, 20, car.z);
+    camera.position.set(px, 7, pz);
+    camera.lookAt(car.x, 12, car.z);
     return;
   }
   const focus = G.inCar && G.playerCar ? G.playerCar.mesh.position : G.playerMesh.position;
@@ -622,10 +622,10 @@ function applyShot() {
     startMission(4);
     G.wanted.level = 1;
     G.wanted.lastCrime = G.now;
-    pm.position.set(-20, 0, -60);
-    G._playerAngle = Math.PI * 0.15;
+    pm.position.set(-26, 0, -60);
+    G._playerAngle = 0.41; // facing the Spire
     // cinematic: player in the lower frame, full Spire + neon behind
-    G.cinematic = { pos: new THREE.Vector3(-38, 5, -78), look: new THREE.Vector3(10, 22, 10) };
+    G.cinematic = { pos: new THREE.Vector3(-38, 5, -78), look: new THREE.Vector3(10, 16, 10) };
   }
   window.__shotReady = true;
 }

@@ -107,7 +107,7 @@ export function updatePoliceCar(car, dt, playerPos, colliders) {
 
 export function makeHelicopter(scene) {
   const g = new THREE.Group();
-  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a2a4a, roughness: 0.5, metalness: 0.4 });
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x2a3a5a, roughness: 0.5, metalness: 0.4, emissive: 0x0a1428, emissiveIntensity: 0.6 });
   const body = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.6, 5), bodyMat);
   g.add(body);
   const tail = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 4.5), bodyMat);
@@ -128,20 +128,27 @@ export function makeHelicopter(scene) {
   const skidR = skidL.clone();
   skidR.position.x = 1.2;
   g.add(skidR);
+  // blinking beacon so the heli reads at dusk
+  const heliBeacon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.28, 8, 6),
+    new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff2020, emissiveIntensity: 3 })
+  );
+  heliBeacon.position.set(0, -1.2, 0);
+  g.add(heliBeacon);
   // searchlight cone (additive, points down at the player)
   const coneMat = new THREE.MeshBasicMaterial({
     color: 0xfff6c8, transparent: true, opacity: 0.16,
     blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
   });
-  const cone = new THREE.Mesh(new THREE.ConeGeometry(7, 40, 20, 1, true), coneMat);
-  cone.position.y = -20;
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(5.5, 30, 20, 1, true), coneMat);
+  cone.position.y = -15;
   g.add(cone);
   const spot = new THREE.Mesh(
     new THREE.CircleGeometry(5, 20),
     new THREE.MeshBasicMaterial({ color: 0xfff2b0, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false })
   );
   spot.rotation.x = -Math.PI / 2;
-  spot.position.y = -39.4;
+  spot.position.y = -29.4;
   g.add(spot);
   g.userData = { rotor, rotor2, cone, spot };
   scene.add(g);
@@ -154,7 +161,7 @@ export function updateHelicopter(heli, dt, playerPos) {
   const tz = playerPos.z - 10;
   m.position.x += (tx - m.position.x) * Math.min(1, dt * 0.8);
   m.position.z += (tz - m.position.z) * Math.min(1, dt * 0.8);
-  m.position.y = 42 + Math.sin(performance.now() * 0.0011) * 1.5;
+  m.position.y = 30 + Math.sin(performance.now() * 0.0011) * 1.5;
   m.rotation.y += dt * 0.15;
   heli.rotorT += dt * 22;
   m.userData.rotor.rotation.y = heli.rotorT;
