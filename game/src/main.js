@@ -44,20 +44,20 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.25;
 document.getElementById('game-root').appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1033);
-scene.fog = new THREE.FogExp2(0x1a1033, 0.0011);
+scene.background = new THREE.Color(0x241a44);
+scene.fog = new THREE.FogExp2(0x241a44, 0.0009);
 const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 900);
 
-const hemi = new THREE.HemisphereLight(0x8a7fd8, 0x1a1410, 0.6);
+const hemi = new THREE.HemisphereLight(0x9a8fd8, 0x2a2018, 1.15);
 scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xff9a5a, 1.5);
+const sun = new THREE.DirectionalLight(0xff9a5a, 1.9);
 sun.position.set(-150, 70, 60);
 scene.add(sun);
-const fill = new THREE.DirectionalLight(0x3a5a8a, 0.35);
+const fill = new THREE.DirectionalLight(0x3a5a8a, 0.5);
 fill.position.set(120, 80, -80);
 scene.add(fill);
 const plazaLight = new THREE.PointLight(0x9a7fff, 60, 70, 1.8);
@@ -538,6 +538,18 @@ function updateCamera(dt) {
     camera.lookAt(G.cinematic.look);
     return;
   }
+  if (G.shotCam === 'chase' && G.inCar && G.playerCar) {
+    // side-front tracking view, snapped each frame: gold coupe low in
+    // frame, police behind it, helicopter + searchlight up top
+    const car = G.playerCar.mesh.position;
+    const a = G.playerCar.angle;
+    const side = 16;
+    const px = car.x + Math.sin(a + 1.15) * side;
+    const pz = car.z + Math.cos(a + 1.15) * side;
+    camera.position.set(px, 8, pz);
+    camera.lookAt(car.x, 20, car.z);
+    return;
+  }
   const focus = G.inCar && G.playerCar ? G.playerCar.mesh.position : G.playerMesh.position;
   const facing = G.playerAngle;
   // auto-follow behind the player unless the user dragged recently
@@ -548,7 +560,7 @@ function updateCamera(dt) {
     while (da < -Math.PI) da += Math.PI * 2;
     G.camYaw += da * Math.min(1, dt * 1.6);
   }
-  const dist = G.inCar ? 12.5 : 9;
+  const dist = G.inCar ? 15 : 9;
   const h = Math.sin(G.camPitch) * dist + 1.6;
   const r = Math.cos(G.camPitch) * dist;
   const cx = focus.x + Math.sin(G.camYaw) * r;
@@ -576,7 +588,7 @@ function applyShot() {
     startMission(1);
     pm.position.set(30, 0, 150);
     G._playerAngle = Math.PI * 0.78;
-    G.cinematic = { pos: new THREE.Vector3(150, 42, 250), look: new THREE.Vector3(-30, 8, -40) };
+    G.cinematic = { pos: new THREE.Vector3(120, 55, 195), look: new THREE.Vector3(-20, 10, -40) };
   } else if (SHOT === 'drive') {
     G.missionIdx = 2;
     startMission(2);
@@ -601,11 +613,10 @@ function applyShot() {
     G.playerCar = car;
     car.stolen = true;
     car.mesh.position.set(26, 0, 20);
-    car.angle = 0;
+    car.angle = Math.PI; // heading north, into the city
     car.speed = 18;
     pm.visible = false;
-    G.camYaw = Math.PI;
-    G.camPitch = 0.3;
+    G.shotCam = 'chase';
   } else if (SHOT === 'dusk') {
     G.missionIdx = 4;
     startMission(4);
@@ -613,8 +624,8 @@ function applyShot() {
     G.wanted.lastCrime = G.now;
     pm.position.set(-20, 0, -60);
     G._playerAngle = Math.PI * 0.15;
-    G.camYaw = Math.PI * 1.15;
-    G.camPitch = 0.22;
+    // cinematic: player in the lower frame, full Spire + neon behind
+    G.cinematic = { pos: new THREE.Vector3(-38, 5, -78), look: new THREE.Vector3(10, 22, 10) };
   }
   window.__shotReady = true;
 }

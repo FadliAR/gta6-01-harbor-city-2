@@ -12,7 +12,7 @@ export const HALF = 188; // city half-extent
 export const ROAD_CENTERS = [-182, -130, -78, -26, 26, 78, 130, 182];
 export const WATER_Z = 196; // walking stops here (except the pier)
 
-const FACADE_COLORS = ['#5a5f73', '#6b5a52', '#4c5a68', '#5d4a63', '#715a4a', '#46586a'];
+const FACADE_COLORS = ['#7a7f93', '#8b7a72', '#6c7a88', '#7d6a83', '#917a6a', '#66788a'];
 const NEON = [0x19f6ff, 0xff2ea6, 0xff9a1f, 0x7dff5a, 0xff4d4d, 0xc26bff];
 const SIGN_WORDS = ['HOTEL', 'NEON', 'PIER 9', '24H', 'BAR', 'TACOS', 'MOTEL', 'CLUB', 'RAMEN', 'DANCE'];
 
@@ -30,10 +30,10 @@ function canvasTex(w, h, draw) {
 
 // One facade variant: diffuse windows + matching emissive (lit windows).
 function makeFacade(base, litRatio, rng) {
-  const cols = 8;
-  const rows = 12;
-  const cw = 32;
-  const ch = 24;
+  const cols = 6;
+  const rows = 8;
+  const cw = 42;
+  const ch = 32;
   const lit = [];
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) lit.push(rng() < litRatio);
@@ -48,12 +48,12 @@ function makeFacade(base, litRatio, rng) {
     }
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        const wx = x * cw + 6;
-        const wy = y * ch + 5;
+        const wx = x * cw + 8;
+        const wy = y * ch + 6;
         g.fillStyle = lit[y * cols + x] ? '#ffd98a' : '#141a26';
-        g.fillRect(wx, wy, cw - 12, ch - 10);
+        g.fillRect(wx, wy, cw - 16, ch - 12);
         g.fillStyle = 'rgba(255,255,255,0.08)';
-        g.fillRect(wx, wy, cw - 12, 3);
+        g.fillRect(wx, wy, cw - 16, 3);
       }
     }
   });
@@ -65,7 +65,7 @@ function makeFacade(base, litRatio, rng) {
         if (!lit[y * cols + x]) continue;
         const warm = chance(rng, 0.8);
         g.fillStyle = warm ? '#ffca6a' : '#9fd8ff';
-        g.fillRect(x * cw + 6, y * ch + 5, cw - 12, ch - 10);
+        g.fillRect(x * cw + 8, y * ch + 6, cw - 16, ch - 12);
       }
     }
   });
@@ -95,25 +95,25 @@ function makeGroundTexture() {
   const toPx = (v) => (v + HALF) * px;
   return canvasTex(S, S, (g) => {
     // base: sidewalk
-    g.fillStyle = '#333743';
+    g.fillStyle = '#4d5262';
     g.fillRect(0, 0, S, S);
     // blocks (slightly lighter slabs)
     for (let i = 0; i < 7; i++) {
       for (let j = 0; j < 7; j++) {
         const x0 = -HALF + PITCH * i + ROAD_W / 2;
         const z0 = -HALF + PITCH * j + ROAD_W / 2;
-        g.fillStyle = (i === 3 && j === 3) ? '#3d3454' : '#3a3f4d';
+        g.fillStyle = (i === 3 && j === 3) ? '#54486e' : '#525766';
         g.fillRect(toPx(x0), toPx(z0), (PITCH - ROAD_W) * px, (PITCH - ROAD_W) * px);
       }
     }
     // roads
-    g.fillStyle = '#191c22';
+    g.fillStyle = '#30353f';
     for (const c of ROAD_CENTERS) {
       g.fillRect(toPx(c - ROAD_W / 2), 0, ROAD_W * px, S);
       g.fillRect(0, toPx(c - ROAD_W / 2), S, ROAD_W * px);
     }
     // center dashes
-    g.fillStyle = '#8a7a3a';
+    g.fillStyle = '#a8943a';
     for (const c of ROAD_CENTERS) {
       for (let d = -HALF + 8; d < HALF - 8; d += 16) {
         g.fillRect(toPx(c) - 1, toPx(d), 2, 8 * px);
@@ -121,7 +121,7 @@ function makeGroundTexture() {
       }
     }
     // crosswalks at every intersection
-    g.fillStyle = 'rgba(220,220,220,0.55)';
+    g.fillStyle = 'rgba(235,235,235,0.7)';
     for (const cx of ROAD_CENTERS) {
       for (const cz of ROAD_CENTERS) {
         for (let k = -2; k <= 2; k++) {
@@ -173,9 +173,9 @@ export function buildCity(scene) {
 
   // --- water (south) + animated wave texture ---
   const waveTex = canvasTex(256, 256, (g) => {
-    g.fillStyle = '#0b3d66';
+    g.fillStyle = '#14507e';
     g.fillRect(0, 0, 256, 256);
-    g.strokeStyle = 'rgba(140,200,255,0.25)';
+    g.strokeStyle = 'rgba(180,220,255,0.35)';
     g.lineWidth = 2;
     for (let i = 0; i < 26; i++) {
       g.beginPath();
@@ -188,7 +188,7 @@ export function buildCity(scene) {
   waveTex.wrapS = waveTex.wrapT = THREE.RepeatWrapping;
   waveTex.repeat.set(6, 3);
   const waterMat = new THREE.MeshStandardMaterial({
-    map: waveTex, color: 0x9fd4ff, roughness: 0.25, metalness: 0.1, transparent: true, opacity: 0.94,
+    map: waveTex, color: 0x9fd4ff, roughness: 0.2, metalness: 0.1, transparent: true, opacity: 0.96,
   });
   const water = new THREE.Mesh(new THREE.PlaneGeometry(900, 260), waterMat);
   water.rotation.x = -Math.PI / 2;
@@ -221,7 +221,7 @@ export function buildCity(scene) {
     map.wrapS = map.wrapT = THREE.RepeatWrapping;
     em.wrapS = em.wrapT = THREE.RepeatWrapping;
     const side = new THREE.MeshStandardMaterial({
-      map, emissiveMap: em, emissive: 0xffffff, emissiveIntensity: 0.85, roughness: 0.85,
+      map, emissiveMap: em, emissive: 0xffffff, emissiveIntensity: 0.7, roughness: 0.85,
     });
     const mats = [side, side, roofMat, roofMat, side, side];
     const main = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mats);
@@ -305,12 +305,18 @@ export function buildCity(scene) {
 
   // --- Harbor Spire (78 m) at the plaza ---
   const spire = new THREE.Group();
-  const spireMat = new THREE.MeshStandardMaterial({ color: 0x3a4a6b, roughness: 0.4, metalness: 0.4 });
+  const spireMat = new THREE.MeshStandardMaterial({ color: 0x5a6a8b, roughness: 0.4, metalness: 0.4 });
+  const spireFacade = makeFacade('#4a5a7a', 0.55, mulberry32(SEED + 55));
   const spireGlass = new THREE.MeshStandardMaterial({
-    color: 0x1a2a44, emissive: 0x2a6aff, emissiveIntensity: 0.5, roughness: 0.2, metalness: 0.6,
+    map: spireFacade.map, emissiveMap: spireFacade.emissiveMap, emissive: 0xffffff,
+    emissiveIntensity: 0.8, roughness: 0.3, metalness: 0.5,
   });
+  spireFacade.map.repeat.set(2, 2);
+  spireFacade.emissiveMap.repeat.set(2, 2);
+  spireFacade.map.wrapS = spireFacade.map.wrapT = THREE.RepeatWrapping;
+  spireFacade.emissiveMap.wrapS = spireFacade.emissiveMap.wrapT = THREE.RepeatWrapping;
   for (let s = 0; s < 5; s++) {
-    const w = 14 - s * 2.2;
+    const w = 16 - s * 2.2;
     const h = 78 / 5;
     const seg = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), s % 2 ? spireMat : spireGlass);
     seg.position.y = h / 2 + s * h;
@@ -323,6 +329,10 @@ export function buildCity(scene) {
     ring.position.y = (s + 1) * h;
     spire.add(ring);
   }
+  // antenna + beacon on top
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 8, 6), darkMetal);
+  ant.position.y = 82;
+  spire.add(ant);
   const beacon = new THREE.Mesh(
     new THREE.SphereGeometry(1.1, 12, 8),
     new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff2020, emissiveIntensity: 3 })

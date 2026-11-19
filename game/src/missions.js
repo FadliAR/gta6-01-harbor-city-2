@@ -9,10 +9,10 @@ export const MISSION_REWARDS = [100, 150, 250, 300, 350, 500];
 export function makeBeacon(scene, color = 0xffc832) {
   const g = new THREE.Group();
   const beamMat = new THREE.MeshBasicMaterial({
-    color, transparent: true, opacity: 0.22,
+    color, transparent: true, opacity: 0.13,
     blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
   });
-  const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.4, 60, 12, 1, true), beamMat);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.8, 60, 12, 1, true), beamMat);
   beam.position.y = 30;
   g.add(beam);
   const ringMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, side: THREE.DoubleSide });
@@ -36,7 +36,7 @@ export function pulseBeacon(beacon, t) {
   const s = 1 + Math.sin(t * 4) * 0.18;
   beacon.userData.ring.scale.set(s, s, 1);
   beacon.userData.core.position.y = 2.2 + Math.sin(t * 3) * 0.5;
-  beacon.userData.beamMat.opacity = 0.16 + Math.sin(t * 2.5) * 0.06;
+  beacon.userData.beamMat.opacity = 0.1 + Math.sin(t * 2.5) * 0.04;
 }
 
 // Mission definitions. `G` is the shared game state (see main.js).

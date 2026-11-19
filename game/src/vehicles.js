@@ -52,12 +52,19 @@ export function makeCarMesh(color, isPolice = false) {
   const wheelGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.3, 12);
   const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0c0c0e, roughness: 0.9 });
   const wheels = [];
+  // wheel hubs (readable at dusk)
+  const hubGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.32, 10);
+  const hubMat = new THREE.MeshStandardMaterial({ color: 0x9aa0ac, roughness: 0.4, metalness: 0.7 });
   for (const [wx, wz] of [[-0.95, 1.45], [0.95, 1.45], [-0.95, -1.45], [0.95, -1.45]]) {
     const w = new THREE.Mesh(wheelGeo, wheelMat);
     w.rotation.z = Math.PI / 2;
     w.position.set(wx, 0.38, wz);
     g.add(w);
     wheels.push(w);
+    const hub = new THREE.Mesh(hubGeo, hubMat);
+    hub.rotation.z = Math.PI / 2;
+    hub.position.set(wx, 0.38, wz);
+    g.add(hub);
   }
   g.userData.wheels = wheels;
   return g;

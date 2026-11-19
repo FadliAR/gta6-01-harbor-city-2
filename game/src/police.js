@@ -137,8 +137,8 @@ export function makeHelicopter(scene) {
   cone.position.y = -20;
   g.add(cone);
   const spot = new THREE.Mesh(
-    new THREE.CircleGeometry(6.5, 20),
-    new THREE.MeshBasicMaterial({ color: 0xfff2b0, transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.CircleGeometry(5, 20),
+    new THREE.MeshBasicMaterial({ color: 0xfff2b0, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false })
   );
   spot.rotation.x = -Math.PI / 2;
   spot.position.y = -39.4;
