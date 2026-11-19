@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEON HARBOR — an open-world crime sandbox</title>
+<link rel="stylesheet" href="./style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js" } }
+</script>
+</head>
+<body>
+<div id="game-root"></div>
+
+<!-- HUD -->
+<div id="hud" style="display:none">
+  <div id="hud-top-left">
+    <div id="cash">$0</div>
+    <div id="health-bar"><div id="health-fill"></div></div>
+    <div id="stars">☆☆☆☆☆</div>
+  </div>
+  <div id="hud-top-center">
+    <div id="mission-title">MISSION 1/6</div>
+    <div id="objective"></div>
+  </div>
+  <div id="hud-bottom-left">
+    <canvas id="minimap" width="180" height="180"></canvas>
+    <div id="radio-label"></div>
+  </div>
+  <div id="hud-bottom-right">
+    <div id="speed"></div>
+  </div>
+  <div id="prompt"></div>
+  <div id="save-flash">SAVED ✓</div>
+</div>
+<div id="banner"></div>
+
+<!-- Title screen -->
+<div id="title-screen" class="screen" style="display:none">
+  <div class="panel">
+    <h1>NEON<span>HARBOR</span></h1>
+    <p class="tagline">An open-world crime sandbox. Steal cars, outrun the harbor PD,<br>run six jobs — and own the night.</p>
+    <div class="buttons">
+      <button id="btn-start">▶ &nbsp;NEW GAME</button>
+      <button id="btn-continue" style="display:none">↻ &nbsp;CONTINUE</button>
+    </div>
+    <p id="save-info" class="save-info"></p>
+    <div class="controls">
+      <b>CONTROLS</b>
+      <span>WASD — move / drive &nbsp;•&nbsp; Mouse drag — look &nbsp;•&nbsp; Space — jump</span>
+      <span>E — steal / exit car &nbsp;•&nbsp; Shift — sprint &nbsp;•&nbsp; R — radio &nbsp;•&nbsp; N — station &nbsp;•&nbsp; M — mute</span>
+      <span>Esc / P — pause</span>
+    </div>
+    <p class="foot">6 missions • 10 cash pickups • wanted 0–5★ • police helicopter at ★★★★ • radio • saves</p>
+  </div>
+</div>
+
+<!-- Pause -->
+<div id="pause-screen" class="screen" style="display:none">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <div class="buttons">
+      <button id="btn-resume">RESUME</button>
+      <button id="btn-restart-pause">RESTART</button>
+    </div>
+  </div>
+</div>
+
+<!-- Busted -->
+<div id="busted-screen" class="screen" style="display:none">
+  <div class="panel">
+    <h2 class="red">BUSTED!</h2>
+    <p>The harbor PD caught up with you.</p>
+    <div class="buttons"><button id="btn-retry-busted">TRY AGAIN</button></div>
+  </div>
+</div>
+
+<!-- Wasted -->
+<div id="wasted-screen" class="screen" style="display:none">
+  <div class="panel">
+    <h2 class="red">WASTED</h2>
+    <p>Neon Harbor is unforgiving.</p>
+    <div class="buttons"><button id="btn-retry-wasted">TRY AGAIN</button></div>
+  </div>
+</div>
+
+<!-- All missions complete -->
+<div id="complete-screen" class="screen" style="display:none">
+  <div class="panel">
+    <h2 class="gold">ALL MISSIONS COMPLETE</h2>
+    <p>You ran every job in Neon Harbor and walked away clean.</p>
+    <p id="complete-stats" class="save-info"></p>
+    <div class="buttons"><button id="btn-again">PLAY AGAIN</button></div>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
