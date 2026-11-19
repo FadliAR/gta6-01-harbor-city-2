@@ -636,4 +636,7 @@ if (SHOT) {
   showScreen(ui, 'title');
 }
 
+// Debug / verification handle (read-only state for automated smoke tests).
+window.__neonHarbor = G;
+
 animate();
